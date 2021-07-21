@@ -1,4 +1,5 @@
 import {Card,Grid,Paper,makeStyles,TextField, Button} from '@material-ui/core'
+import {useState} from 'react'
 
 const useStyles=makeStyles({
   input:
@@ -22,8 +23,25 @@ const useStyles=makeStyles({
 
 function Main () {
 
+  const [food,setFood]=useState('')
+  const [serving,setServing]=useState('')
+  const [data,setData]=useState([])
   const classes=useStyles()
 
+  function handleChange1(e){
+    setFood(e.target.value)
+  }
+  function handleChange2(e){
+    setServing(e.target.value)
+  }
+  function handleClick(){
+      fetch(`https://api.nal.usda.gov/fdc/v1/foods/search?query=${food}&pageSize=1&dataType=Survey (FNDDS)&api_key=g0v6KUIALGsi6DIcuy0bHbvVvMBfxv6iTYTMpbfL`).then(res=>res.json())
+      .then(data=>setData([
+        data.foods[0].
+        foodNutrients.filter((a,index)=>{
+          if(index<4){return a[1]}
+        })]))
+  }
   return ( <div>
     <Grid container>
       <Grid 
@@ -36,15 +54,19 @@ function Main () {
           fullWidth 
           label='food' 
           className={classes.fields}
+          onChange={handleChange1}
           variant='outlined'/>
           <TextField 
           fullWidth 
           label='serving' 
+          onChange={handleChange2}
           className={classes.fields}
           variant='outlined'/>
           <Button 
+          type='submit'
           variant='contained'
           className={classes.buttons}
+          onClick={(food&&serving)&&handleClick}
           color='primary'
           >add</Button>
         </Paper>
